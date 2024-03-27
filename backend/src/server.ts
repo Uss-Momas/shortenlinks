@@ -21,7 +21,7 @@ app.get('/:code', async (req, reply) => {
 
     const result = await prisma.shortLink.findUnique({
         where: { code }, select: {
-            id: true, original_url: true
+            id: true, originalUrl: true
         }
     });
 
@@ -29,7 +29,7 @@ app.get('/:code', async (req, reply) => {
         return reply.status(404).send({ message: "Link Not Found" });
     }
 
-    const link = result.original_url;
+    const link = result.originalUrl;
 
     await redis.zIncrBy('metrics', 1, result.id);
 
@@ -37,7 +37,7 @@ app.get('/:code', async (req, reply) => {
 });
 
 app.get('/api/links', async (req, reply) => {
-    const result = await prisma.shortLink.findMany({ orderBy: { created_at: 'desc' } });
+    const result = await prisma.shortLink.findMany({ orderBy: { createdAt: 'desc' } });
 
     return reply.send(result);
 });
@@ -53,7 +53,7 @@ app.post('/api/links', async (request: FastifyRequest, reply: FastifyReply) => {
         const shortLink = await prisma.shortLink.create({
             data: {
                 code,
-                original_url: url
+                originalUrl: url
             }
         });
 

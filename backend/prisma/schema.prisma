@@ -16,9 +16,9 @@ datasource db {
 model ShortLink {
   id String @id @default(uuid())
   code String @unique
-  original_url String
+  originalUrl String @map("original_url")
 
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
   @@map("short_links")
 }
