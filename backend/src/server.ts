@@ -12,6 +12,30 @@ app.register(cors, {
     origin: '*',
 });
 
+app.get('/proxy/:code', async (req, reply) => {
+    const getLinkSchema = z.object({
+        code: z.string().min(3),
+    });
+
+    const { code } = getLinkSchema.parse(req.params);
+
+    const result = await prisma.shortLink.findUnique({
+        where: { code }, select: {
+            id: true, originalUrl: true
+        }
+    });
+
+    if (!result) {
+        return reply.status(404).send({ message: "Link Not Found" });
+    }
+
+    const link = result.originalUrl;
+
+    await redis.zIncrBy('metrics', 1, result.id);
+
+    return reply.send({ link });
+});
+
 app.get('/:code', async (req, reply) => {
     const getLinkSchema = z.object({
         code: z.string().min(3),
@@ -71,14 +95,14 @@ app.post('/api/links', async (request: FastifyRequest, reply: FastifyReply) => {
 });
 
 app.get('/api/metrics', async () => {
-   const result = await redis.zRangeByScoreWithScores('metrics', 0, 50); // member, inicio, stop(-1 ultimo)
-   const metrics = result.sort((a, b) => b.score - a.score).map((item) => {
-    return {
-        shortLink: item.value,
-        clicks: item.score,
-    }
-   });
-   return metrics;
+    const result = await redis.zRangeByScoreWithScores('metrics', 0, 50); // member, inicio, stop(-1 ultimo)
+    const metrics = result.sort((a, b) => b.score - a.score).map((item) => {
+        return {
+            shortLink: item.value,
+            clicks: item.score,
+        }
+    });
+    return metrics;
 });
 
 app.listen({
