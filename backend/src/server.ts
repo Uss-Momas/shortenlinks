@@ -3,9 +3,14 @@ import { z } from 'zod';
 import { prisma } from "./database/prisma";
 import { Prisma } from "@prisma/client";
 import { redis } from "./database/redis";
+import cors from '@fastify/cors';
 
 const app = fastify();
 
+
+app.register(cors, {
+    origin: '*',
+});
 
 app.get('/:code', async (req, reply) => {
     const getLinkSchema = z.object({
