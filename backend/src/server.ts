@@ -7,11 +7,11 @@ import cors from '@fastify/cors';
 
 const app = fastify();
 
-app.register(routes, { prefix: '/api/v1' });
-
 app.register(cors, {
     origin: '*',
 });
+
+app.register(routes, { prefix: '/api/v1' });
 
 app.get('/proxy/:code', async (req, reply) => {
     const getLinkSchema = z.object({

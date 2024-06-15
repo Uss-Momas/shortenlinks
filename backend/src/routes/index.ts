@@ -23,6 +23,8 @@ async function routes(fastify: FastifyInstance, options: FastifyPluginOptions) {
 
             return reply.status(422).send({ message: 'Validation Errors!', errors: errorMessages });
         }
+        console.log(error.message);
+        
         return reply.status(500).send({ message: "Internal Error" });
     });
 }
