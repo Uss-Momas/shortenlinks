@@ -39,12 +39,66 @@
 .short-link-form-container .short-link-form {
     display: flex;
     justify-content: center;
+
 }
 
 .short-link-form-container .short-link-form input[type=text] {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     border-radius: 2rem;
     padding: .8rem;
     padding-left: 1.5rem;
     width: 100%;
     border: 1px solid #353C4A;
+    margin-right: 1rem;
+}
+
+.short-link-form-container .short-link-form input[type=submit] {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    border-radius: 2rem;
+    border: 0;
+    padding: 1rem 2rem;
+    background-color: #144EE3;
+    font-weight: bold;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    background: #144EE3;
+    border: 1px solid #144EE3;
+    box-shadow: 10px 9px 22px rgba(20, 78, 227, 0.38);
+    border-radius: 48px;
+
+}
+
+
+.short-link-table {
+    margin-top: 4rem;
+}
+
+.short-link-table thead{
+    background: #181E29;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(14px);
+    /* Note: backdrop-filter has minimal browser support */
+    border-radius: 10px 10px 0px 0px;
+
+}
+.short-link-table thead tr th {
+    padding: .5rem;
+}
+
+.short-link-table tbody tr {
+    background: rgba(24, 30, 41, 0.22);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(28px);
+    /* Note: backdrop-filter has minimal browser support */
+    border-radius: 0px;
+
+}
+
+.short-link-table tbody tr td {
+    padding: .5rem;
 }

@@ -19,7 +19,7 @@ export default function HomePage() {
                     </div>
                 </div>
                 <div>
-                    <table>
+                    <table className='short-link-table'>
                         <thead>
                             <tr>
                                 <th>Short Link</th>
