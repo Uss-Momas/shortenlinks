@@ -1,0 +1,18 @@
+meta {
+  name: Create shortlink
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{API_URL}}/links
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "url": "http://a",
+    "code": "12131"
+  }
+}

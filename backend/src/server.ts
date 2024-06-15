@@ -1,11 +1,12 @@
-import fastify, { FastifyReply, FastifyRequest } from "fastify";
+import fastify from "fastify";
 import { z } from 'zod';
 import { prisma } from "./database/prisma";
-import { Prisma } from "@prisma/client";
 import { redis } from "./database/redis";
+import routes from "./routes";
 
 const app = fastify();
 
+app.register(routes, { prefix: '/api/v1' });
 
 app.get('/:code', async (req, reply) => {
     const getLinkSchema = z.object({
@@ -29,51 +30,6 @@ app.get('/:code', async (req, reply) => {
     await redis.zIncrBy('metrics', 1, result.id);
 
     return reply.redirect(301, link);
-});
-
-app.get('/api/links', async (req, reply) => {
-    const result = await prisma.shortLink.findMany({ orderBy: { created_at: 'desc' } });
-
-    return reply.send(result);
-});
-
-app.post('/api/links', async (request: FastifyRequest, reply: FastifyReply) => {
-    const createLinkSchema = z.object({
-        code: z.string().min(3),
-        url: z.string().url(),
-    });
-    const { code, url } = createLinkSchema.parse(request.body);
-
-    try {
-        const shortLink = await prisma.shortLink.create({
-            data: {
-                code,
-                original_url: url
-            }
-        });
-
-        return reply.status(201).send({ shortLinkId: shortLink.id });
-    } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (error.code === 'P2002') {
-                return reply.status(400).send({ message: "Duplicated Code" })
-            }
-        }
-
-        console.error(error);
-        return reply.status(500).send({ message: "Internal Error" });
-    }
-});
-
-app.get('/api/metrics', async () => {
-   const result = await redis.zRangeByScoreWithScores('metrics', 0, 50); // member, inicio, stop(-1 ultimo)
-   const metrics = result.sort((a, b) => b.score - a.score).map((item) => {
-    return {
-        shortLink: item.value,
-        clicks: item.score,
-    }
-   });
-   return metrics;
 });
 
 app.listen({
